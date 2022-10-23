@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Fragment, SyntheticEvent } from "react";
-
+import { useRouter, NextRouter } from "next/router";
 export default function RegisterForm({ token }) {
+	const router = useRouter();
 	return (
 		<Fragment>
-			<form onSubmit={register}>
+			<form onSubmit={(e) => register(e, router)}>
 				<input type="text" name="id"></input>
 				<input type="password" name="password"></input>
 				<input type="text" name="userName"></input>
@@ -17,14 +18,15 @@ export default function RegisterForm({ token }) {
 				<input type="submit" value="회원가입"></input>
 				<input type="hidden" name="token" value={token}></input>
 			</form>
-		</Fragment >
-	)
+		</Fragment>
+	);
 }
 
 /**
  * @param {SyntheticEvent<HTMLFormElement>} submitEvent
+ * @param {NextRouter} router
  */
-async function register(submitEvent) {
+async function register(submitEvent, router) {
 	submitEvent.preventDefault();
 	const form = submitEvent.target;
 	if (!form) return false;
@@ -34,12 +36,14 @@ async function register(submitEvent) {
 		password: form?.password.value,
 		token: form?.token.value,
 		userName: form?.userName.value,
-		userClass: form?.userClass.value
+		userClass: form?.userClass.value,
 	};
-	const response = await axios.post("/api/accounts/account", data, { validateStatus: false });
+	const response = await axios.post("/api/accounts/account", data, {
+		validateStatus: false,
+	});
 	const result = response.data;
 	if (result.success) {
-		location.href = "/login";
+		router.push("/login");
 	} else {
 		console.error(result);
 	}

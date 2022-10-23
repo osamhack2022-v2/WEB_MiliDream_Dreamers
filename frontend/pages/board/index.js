@@ -6,9 +6,7 @@ import BoardMiniView from "../../components/board/BoardMiniView";
 import BoardHeader from "../../components/board/BoardHeader";
 import config from "../../config";
 
-export default function board(props) {
-	const category = props?.boards;
-	//console.log(category.category)
+export default function board({ category }) {
 	return (
 		<div>
 			<div className="container">
@@ -20,13 +18,24 @@ export default function board(props) {
 				</div>
 				<div className="navBar">
 					<BoardSearchBar placeHolder="게시판 검색" />
-					<BoardNavBar props={category} />
+					<BoardNavBar category={category} />
 				</div>
 				<div className="banner">
 					<BoardCenter />
 				</div>
 				<div className="BoardMain">
-					{category.category && category.category.slice(0).reverse().map((article) => <BoardMiniView key={article.categoryKey} link={article.categoryKey} article={article} type="원래는 복무지/취미 구분하려던 props" />)}
+					{category &&
+						category
+							.slice(0)
+							.reverse()
+							.map((article) => (
+								<BoardMiniView
+									key={article.categoryKey}
+									link={article.categoryKey}
+									article={article}
+									type="원래는 복무지/취미 구분하려던 props"
+								/>
+							))}
 					{/* <BoardMiniView type="hobby" boardId="인기 게시판" />
 					<BoardMiniView type="hobby" boardId="자유 게시판" />
 					<BoardMiniView type="hobby" boardId="추천 복무지 게시판" />
@@ -36,46 +45,54 @@ export default function board(props) {
 				<div className="footer"></div>
 			</div>
 			<style jsx>{`
-          .BoardMain {
-            display: flex;
-          }
-          .container {
-            display:  grid;
-            grid-template-areas:
-              "userInfo header header"
-              "userInfo banner banner"
-              "navBar   banner banner"
-              "navBar   miniB  miniB"
-              "navBar   miniB  miniB"
-              "navBar   .      .    "
-              "footer   footer  footer";
-            grid-gap: 16px;
-          }
-          .headerB { grid-area: header; }
-          .banner { grid-area: banner; }
-          .userInfo { grid-area: userInfo; }
-          .navBar { grid-area: navBar; }
-          .BoardMain { 
-            grid-area: miniB; 
-            display: contents;
-          }
-          .footer { grid-area: footer; }
-        `}</style>
+				.BoardMain {
+					display: flex;
+				}
+				.container {
+					display: grid;
+					grid-template-areas:
+						"userInfo header header"
+						"userInfo banner banner"
+						"navBar   banner banner"
+						"navBar   miniB  miniB"
+						"navBar   miniB  miniB"
+						"navBar   .      .    "
+						"footer   footer  footer";
+					grid-gap: 16px;
+				}
+				.headerB {
+					grid-area: header;
+				}
+				.banner {
+					grid-area: banner;
+				}
+				.userInfo {
+					grid-area: userInfo;
+				}
+				.navBar {
+					grid-area: navBar;
+				}
+				.BoardMain {
+					grid-area: miniB;
+					display: contents;
+				}
+				.footer {
+					grid-area: footer;
+				}
+			`}</style>
 		</div>
-	)
+	);
 }
 
 export const getServerSideProps = async () => {
 	const response = await fetch(config.API_ENDPOINT + "/api/board/category");
 	console.log(response);
 	const boards = await response.json();
+	console.log("boards:", boards);
 	return {
-		props: {
-			boards
-		}
-	}
-}
-
+		props: boards,
+	};
+};
 
 //ISSUE : https://yceffort.kr/2021/10/get-absolute-url-in-nextjs 참고하여 추후 각 실행 환경마다 바뀌는 절대경로에 대한 처리 필요.
 
@@ -105,7 +122,6 @@ export const getServerSideProps = async () => {
 //   }
 // }
 
-  
 //   async function getUser(id, options) {
 // 	const absoluteURL = getAbsoluteURL(options?.req).origin
 // 	const response = await fetch(
@@ -118,7 +134,7 @@ export const getServerSideProps = async () => {
 //   export const getServerSideProps = async (ctx) => {
 // 	const { req } = ctx
 // 	const userId = ctx.query?.userId
-  
+
 // 	const user = await getUser(userId, { req })
 // 	return {
 // 	  props: {
