@@ -5,7 +5,7 @@ import Image from "next/image";
 import logo from "../public/logo.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import globalState from "../states/GlobalState";
+import { globalState } from "../states/GlobalState";
 
 //만약 로그인된 상태라면 로그아웃을 출력해야 함.
 export default function NavBar() {

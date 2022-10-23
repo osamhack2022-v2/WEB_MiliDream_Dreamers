@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 import Layout from "../components/Layout";
-import globalState from "../states/GlobalState";
+import { globalState } from "../states/GlobalState";
 import "../styles/globals.css";
 
 /* 전역적인 component를 추가하는 곳. 
  * 이곳에 추가된 component (예로, NavBar 등)들은 
   모든 하위 페이지들이 로딩되기 이전에 먼저 로딩되어 실행된다. */
 export default function App({ Component, pageProps }) {
-    const getLogon = globalState((state) => state.getLogon);
-    useEffect(() => {
-        getLogon();
-    }, []);
+	const getLogon = globalState((state) => state.getLogon);
+	useEffect(() => {
+		getLogon();
+	}, []);
 
-    return (
-        <Layout>
-            <Component {...pageProps} />
-        </Layout>
-    );
+	return (
+		<Layout>
+			<Component {...pageProps} />
+		</Layout>
+	);
 }

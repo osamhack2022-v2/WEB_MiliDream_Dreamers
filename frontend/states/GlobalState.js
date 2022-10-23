@@ -1,11 +1,12 @@
 import create from "zustand";
 
-const globalState = create((set, get) => {
+export const globalState = create((set, get) => {
 	const returnObj = {
 		logon: false,
 		logonLoading: true,
 		test: 3,
 		testUpdate: () => set({ test: 7 }),
+		setTest: () => set({ test: get().test + 1 }),
 		getLogon: () => {
 			return get().logonLoading || get().logon;
 		},
@@ -31,4 +32,13 @@ const globalState = create((set, get) => {
 	return returnObj;
 });
 
-export default globalState;
+export const useBoardStore = create((set) => ({
+	articleId: 0,
+	boardId: 0,
+	type: 0,
+	category: "",
+	setArticleId: (ele) => set(() => ({ articleId: ele })),
+	setBoardId: (ele) => set(() => ({ boardId: ele })),
+	setType: (ele) => set(() => ({ type: ele })),
+	setCategory: (ele) => set(() => ({ category: ele })),
+}));

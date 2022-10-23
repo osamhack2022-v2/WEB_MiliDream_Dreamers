@@ -5,40 +5,42 @@ import ArticleWriteView from "../../../../components/board/board-id/article-id/A
 import BoardHeader from "../../../../components/board/BoardHeader";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import create from "zustand";
-import globalState from "../../../../states/GlobalState";
-
-export const useBoardStore = create((set) => ({
-	articleId: 0,
-	boardId: 0,
-	type: 0,
-	category: "",
-	setArticleId: (ele) => set(() => ({ articleId: ele })),
-	setBoardId: (ele) => set(() => ({ boardId: ele })),
-	setType: (ele) => set(() => ({ type: ele })),
-	setCategory: (ele) => set(() => ({ category: ele })),
-}));
+import { globalState, useBoardStore } from "../../../../states/GlobalState";
+import shallow from "zustand/shallow";
 
 export default function article_id({ category: categoryList }) {
 	//이전 페이지 (BoardMiniView 등)에서 넘어올 때 Link query로 다음 인자를 받아와야 한다. { type, boardId };;
 	const router = useRouter();
-	const logon = globalState((state) => state.logon);
-	const test = globalState((state) => state.test);
-	console.log("Testval", test);
-	console.log("Logon: ", logon);
+	const { logon, setTest } = globalState((state) => {
+		console.log(Object.keys(state));
+		const { logon, setTest } = state;
+		return { logon, setTest };
+	}, shallow);
 
-	const articleId = router.query["article-id"];
+	console.log("Logon: ", logon);
+	console.log("RELOADED");
+
+	// const articleId = router.query["article-id"];
 	const boardId = router.query["board-id"];
 	const type = router.query["type"];
 
-	const { setArticleId, setBoardId, setType, setCategory, category } =
-		useBoardStore((state) => ({
-			setArticleId: state.setArticleId,
-			setBoardId: state.setBoardId,
-			setType: state.setType,
-			setCategory: state.setCategory,
-			category: state.category,
-		}));
+	const {
+		setArticleId,
+		setBoardId,
+		setType,
+		setCategory,
+		category,
+		articleId,
+	} = useBoardStore((state) => ({
+		setArticleId: state.setArticleId,
+		setBoardId: state.setBoardId,
+		setType: state.setType,
+		setCategory: state.setCategory,
+		category: state.category,
+		articleId: state.articleId,
+	}));
+
+	console.log("articleid:", articleId);
 
 	useEffect(() => {
 		setArticleId(router.query["article-id"]);
@@ -52,8 +54,10 @@ export default function article_id({ category: categoryList }) {
 			// router.push("/");
 		}
 	}, [logon]);
+
 	return (
 		<div>
+			<button onClick={setTest}>test button</button>
 			<div className="container">
 				<div className="headerB">
 					<BoardHeader type={type} boardId={category} />
